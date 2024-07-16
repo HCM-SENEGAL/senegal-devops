@@ -4,7 +4,7 @@ terraform {
     key    = "digit-bootcamp-setup/terraform.tfstate"
     region = "af-south-1"
     # The below line is optional depending on whether you are using DynamoDB for state locking and consistency
-    # dynamodb_table = "digit-nghealthprd-terraform"
+    # dynamodb_table = "digit-mozhealthqa1-terraform"
     # The below line is optional if your S3 bucket is encrypted
     encrypt = true
   }
@@ -35,7 +35,6 @@ module "db" {
   environment                   = "${var.cluster_name}"
 }
 
-
 data "aws_eks_cluster" "cluster" {
   name = "${module.eks.cluster_id}"
 }
@@ -54,38 +53,6 @@ provider "kubernetes" {
   host                   = "${data.aws_eks_cluster.cluster.endpoint}"
   cluster_ca_certificate = "${base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)}"
   token                  = "${data.aws_eks_cluster_auth.cluster.token}"
-}
-
-module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = "17.24.0"
-  cluster_name    = "${var.cluster_name}"
-  vpc_id          = "${module.network.vpc_id}"
-  cluster_version = "${var.kubernetes_version}"
-  subnets         = "${concat(module.network.private_subnets, module.network.public_subnets)}"
-
-##By default worker groups is Configured with SPOT, As per your requirement you can below values.
-
-  worker_groups = [
-    {
-      name                          = "spot"
-      ami_id                        = "ami-0a82b544ef71a207d"
-      subnets                       = "${concat(slice(module.network.private_subnets, 0, length(var.availability_zones)))}"
-      instance_type                 = "${var.instance_type}"
-      override_instance_types       = "${var.override_instance_types}"
-      kubelet_extra_args            = "--node-labels=node.kubernetes.io/lifecycle=spot"
-      asg_max_size                  = "${var.number_of_worker_nodes}"
-      asg_desired_capacity          = "${var.number_of_worker_nodes}"
-      spot_allocation_strategy      = "capacity-optimized"
-      spot_instance_pools           = null
-    }
-  ]
-  tags = "${
-    tomap({
-      "kubernetes.io/cluster/${var.cluster_name}" = "owned",
-      "KubernetesCluster" = "${var.cluster_name}"
-    })
-  }"
 }
 
 resource "aws_iam_role" "eks_iam" {
@@ -111,9 +78,51 @@ resource "aws_iam_role" "eks_iam" {
   })
 }
 
+module "eks" {
+  source          = "terraform-aws-modules/eks/aws"
+  version         = "17.24.0"
+  cluster_name    = "${var.cluster_name}"
+  vpc_id          = "${module.network.vpc_id}"
+  cluster_version = "${var.kubernetes_version}"
+  subnets         = "${concat(module.network.private_subnets, module.network.public_subnets)}"
+
+##By default worker groups is Configured with SPOT, As per your requirement you can below values.
+
+  worker_groups_launch_template = [
+    {
+      name                          = "spot"
+      ami_id                        = "ami-01f0943e426a7248a"
+      subnets                       = "${concat(slice(module.network.private_subnets, 0, length(var.availability_zones)))}"
+      instance_type                 = "${var.instance_type}"
+      override_instance_types       = "${var.override_instance_types}"
+      kubelet_extra_args            = "--node-labels=node.kubernetes.io/lifecycle=spot"
+      asg_max_size                  = "${var.number_of_worker_nodes}"
+      asg_desired_capacity          = "${var.number_of_worker_nodes}"
+      spot_allocation_strategy      = "capacity-optimized"
+      spot_instance_pools           = null
+      launch_template_name          = "${var.cluster_name}-lt"
+      launch_template_version       = "$Latest"
+    }
+  ]
+  tags = "${
+    tomap({
+      "kubernetes.io/cluster/${var.cluster_name}" = "owned",
+      "KubernetesCluster" = "${var.cluster_name}"
+    })
+  }"
+}
+
+resource "kubernetes_service_account" "ebs_csi_controller_sa" {
+  metadata {
+    name      = "ebs-csi-controller-sa"
+    namespace = "kube-system"
+  }
+} 
+
 resource "kubernetes_annotations" "example" {
   api_version = "v1"
   kind        = "ServiceAccount"
+  depends_on  = ["kubernetes_service_account.ebs_csi_controller_sa"]
   metadata {
     name = "ebs-csi-controller-sa"
     namespace = "kube-system"
@@ -125,7 +134,7 @@ resource "kubernetes_annotations" "example" {
 
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEBSCSIDriverPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-  role       = "${aws_iam_role.eks_iam.name}"
+  role       = module.eks.cluster_iam_role_name
 }
 
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEC2FullAccess" {
@@ -140,7 +149,7 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
 }
 
 resource "aws_security_group_rule" "rds_db_ingress_workers" {
-  description              = "Allow worker nodes to communicate with RDS database" 
+  description              = "Allow worker nodes to communicate with RDS database"
   from_port                = 5432
   to_port                  = 5432
   protocol                 = "tcp"
@@ -163,6 +172,29 @@ resource "aws_eks_addon" "aws_ebs_csi_driver" {
   cluster_name      = data.aws_eks_cluster.cluster.name
   addon_name        = "aws-ebs-csi-driver"
   resolve_conflicts = "OVERWRITE"
+}
+
+module "es-master" {
+
+  source = "../modules/storage/aws"
+  storage_count = 3
+  environment = "${var.cluster_name}"
+  disk_prefix = "es-master"
+  availability_zones = "${var.availability_zones}"
+  storage_sku = "gp2"
+  disk_size_gb = "10"
+  
+}
+module "es-data" {
+
+  source = "../modules/storage/aws"
+  storage_count = 3
+  environment = "${var.cluster_name}"
+  disk_prefix = "es-data"
+  availability_zones = "${var.availability_zones}"
+  storage_sku = "gp2"
+  disk_size_gb = "100"
+  
 }
 
 module "zookeeper" {
@@ -189,28 +221,4 @@ module "kafka" {
   
 }
 
-
-
-module "esv8-master" {
-
-source = "../modules/storage/aws"
-storage_count = 3
-environment = "${var.cluster_name}"
-disk_prefix = "esv8-master"
-availability_zones = "${var.availability_zones}"
-storage_sku = "gp2"
-disk_size_gb = "10"
-
-}
-module "esv8-data" {
-
-source = "../modules/storage/aws"
-storage_count = 3
-environment = "${var.cluster_name}"
-disk_prefix = "esv8-data"
-availability_zones = "${var.availability_zones}"
-storage_sku = "gp2"
-disk_size_gb = "100"
-
-}
 

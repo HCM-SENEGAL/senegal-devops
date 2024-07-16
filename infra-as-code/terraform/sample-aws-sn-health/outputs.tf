@@ -21,6 +21,15 @@ output "kubectl_config" {
   value       = module.eks.kubeconfig
 }
 
+
+output "es_master_volume_ids" {
+  value = "${module.es-master.volume_ids}"
+}
+
+output "es_data_volume_ids" {
+  value = "${module.es-data.volume_ids}"
+}
+
 output "zookeeper_volume_ids" {
   value = "${module.zookeeper.volume_ids}"
 }
@@ -57,13 +66,4 @@ output "zone" {
 output "worker_security_group_id" {
   description = "The security group id of worker nodes"
   value       = module.eks.worker_security_group_id
-}
-
-
-output "esv8_master_volume_ids" {
-  value = "${module.esv8-master.volume_ids}"
-}
-
-output "esv8_data_volume_ids" {
-  value = "${module.esv8-data.volume_ids}"
 }
