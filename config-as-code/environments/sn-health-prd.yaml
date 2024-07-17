@@ -5,7 +5,7 @@ global:
 cluster-configs:
   namespaces:
     create: true
-    values: [ backbone, cert-manager, egov, es-cluster, kafka-cluster, logging, monitoring, playground, zookeeper-cluster, es-cluster-v8 ]
+    values: [ backbone, cert-manager, egov, es-cluster, kafka-cluster, logging, monitoring, playground, zookeeper-cluster, es-cluster-v8, jupyter ]
 
   root-ingress:
     cert-issuer: letsencrypt-prod
@@ -356,7 +356,7 @@ egov-persister:
   persist-yml-path: "file:///work-dir/health-campaign-config/egov-persister/audit-service-persister.yml,file:///work-dir/health-campaign-config/egov-persister/egov-user-event-persister.yml,file:///work-dir/health-campaign-config/egov-persister/egov-workflow-v2-persister.yml,file:///work-dir/health-campaign-config/egov-persister/hrms-employee-persister.yml,file:///work-dir/health-campaign-config/egov-persister/pdf-generator.yml,file:///work-dir/health-campaign-config/egov-persister/product-persister.yml,file:///work-dir/health-campaign-config/egov-persister/project-persister.yml,file:///work-dir/health-campaign-config/egov-persister/individual-persister.yml,file:///work-dir/health-campaign-config/egov-persister/household-persister.yml,file:///work-dir/health-campaign-config/egov-persister/project-task-persister.yml,file:///work-dir/health-campaign-config/egov-persister/stock-persister.yml,file:///work-dir/health-campaign-config/egov-persister/facility-persister.yml,file:///work-dir/health-campaign-config/egov-persister/service-request-persister.yml,file:///work-dir/health-campaign-config/egov-persister/pgr-services-persister.yml,file:///work-dir/health-campaign-config/egov-persister/hcm-moz-impl-persister.yml,file:///work-dir/health-campaign-config/egov-persister/mdms-persister.yml,file:///work-dir/health-campaign-config/egov-persister/referral-management-persister.yml,file:///work-dir/health-campaign-config/egov-persister/attendance-service-persister.yml"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"      ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"      ##### Change repo url with Your fork Repo url
       branch: "PROD"                                    ##### Change repo branch with Your fork Repo branch
 
 egov-data-uploader:
