@@ -1,5 +1,5 @@
 global:
-  domain: prod.hcm-kano.org
+  domain: senegal-hcm.digit.org
   setup: fullsetup
 
 cluster-configs:
@@ -13,15 +13,15 @@ cluster-configs:
     egov-config:
       namespace: [egov, monitoring]
       data:
-        db-host: "ng-health-prd-db.cp2402gi2u8g.af-south-1.rds.amazonaws.com" ## Add db-host name eg: egov-demo.database.azure.com
-        db-name: "nghealthprd" ## Add db-name
-        db-url: "jdbc:postgresql://ng-health-prd-db.cp2402gi2u8g.af-south-1.rds.amazonaws.com:5432/nghealthprd" ## example: jdbc:postgresql://egov-demo.postgres.database.azure.com:5432/egov_demo
-        domain: "prod.hcm-kano.org" ## Add your Domain Name
-        egov-services-fqdn-name: "https://prod.hcm-kano.org/" ## Add your Domain Name
-        aws-cluster-ip: "https://F4A6E69E1A43261C7BE852B355088271.gr7.af-south-1.eks.amazonaws.com"
+        db-host: "sn-health-prd-db.cp6quao6ao9k.af-south-1.rds.amazonaws.com" ## Add db-host name eg: egov-demo.database.azure.com
+        db-name: "snhealthprd" ## Add db-name
+        db-url: "jdbc:postgresql://sn-health-prd-db.cp6quao6ao9k.af-south-1.rds.amazonaws.com:5432/snhealthprd" ## example: jdbc:postgresql://egov-demo.postgres.database.azure.com:5432/egov_demo
+        domain: "senegal-hcm.digit.org" ## Add your Domain Name
+        egov-services-fqdn-name: "https://senegal-hcm.digit.org/" ## Add your Domain Name
+        aws-cluster-ip: "https://23350FD22201ACBB56E594C27F9633C5.sk1.af-south-1.eks.amazonaws.com"
         aws-region: "af-south-1"
-        aws-cluster-name: "arn:aws:eks:af-south-1:211125416222:cluster/ng-health-prd"
-        egov-state-level-tenant-id: "ng"
+        aws-cluster-name: "arn:aws:eks:af-south-1:730335612243:cluster/sn-health-prd"
+        egov-state-level-tenant-id: "sn"
         redis-host: "redis.backbone"
         s3-assets-bucket: "(pg-health-egov-assets|egov-health-playground-assets)"
         es-host: "elasticsearch-data.es-cluster-v8"
@@ -154,6 +154,7 @@ cluster-configs:
         stock: "http://stock:8080/"
         facility: "http://facility:8080/"
         service-request: "http://service-request:8080/"
+        attendance-service: "http://attendance.egov:8080/"
 
     hcm-moz-impl:
       data:
@@ -196,6 +197,19 @@ egov-filestore:
   allowed-file-formats: "jpg,jpeg,png,doc,docx,pdf,odt,ods,text,dxf,xls,xlsx"
   filestore-url-validity: 3600
   fixed-bucketname: health-egov-assets  ## Add filestore bucket name
+
+attendance-service:
+  tracing-enabled: true
+  java-enable-debug: true
+  attendance-register-default-offset: 0
+  attendance-register-default-limit: 10
+  attendance-register-search-max-limit: 100
+  attendance-individual-service-integration-required: false
+  attendance-staff-service-integration-required: false
+  attendance-document-id-verification-required: false
+  attendance-register-open-search-enabled-roles: "SUPERUSER,SYSTEM_ADMINISTRATOR"
+  organisation-contact-details-update-topic: organisation.contact.details.update
+  contracts-revision-topic: "contracts-revision"
 
 egov-idgen:
   idformat-from-mdms: "true"
@@ -281,21 +295,21 @@ egov-pg-service:
   axis: true
 
 audit-service:
-  persist-yml-path: "https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/egov-workflow-v2-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/facility-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/hcm-moz-impl-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/household-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/hrms-employee-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/individual-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/stock-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/service-request-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/project-task-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/project-persister.yml,https://raw.githubusercontent.com/HCM-NIGERIA/health-campaign-config/PROD/egov-persister/product-persister.yml"
+  persist-yml-path: "https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/egov-workflow-v2-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/facility-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/hcm-moz-impl-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/household-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/hrms-employee-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/individual-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/stock-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/service-request-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/project-task-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/project-persister.yml,https://raw.githubusercontent.com/HCM-SENEGAL/health-campaign-config/PROD/egov-persister/product-persister.yml"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"
       branch: "PROD"
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 egov-mdms-service:
-  heap: "-Xmx768m -Xms768m"
-  memory_limits: "768Mi"
+  heap: "-Xmx1024m -Xms1024m"
+  memory_limits: "1Gi"
   resources:
     requests:
-      memory: "768Mi"
+      memory: "1Gi"
     limits:
-      memory: "768Mi"
+      memory: "1Gi"
   replicas: 1
   branch: "PROD"
   images:
@@ -303,7 +317,7 @@ egov-mdms-service:
   mdms-path: "/work-dir/health-campaign-mdms/data"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-mdms"   ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-mdms"   ##### Change repo url with Your fork Repo url
       branch: "PROD"                                        ##### Change repo branch with Your fork Repo branch
   mdms-folder: "health-campaign-mdms"
   masters-config-url: "file:///work-dir/health-campaign-mdms/master-config.json"
@@ -318,7 +332,7 @@ egov-mdms-create:
   mdms-path: "/work-dir/health-campaign-mdms/data"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-mdms"   ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-mdms"   ##### Change repo url with Your fork Repo url
       branch: "PROD"                                        ##### Change repo branch with Your fork Repo branch
   mdms-folder: "health-campaign-mdms"
   masters-config-url: "file:///work-dir/health-campaign-mdms/master-config.json"
@@ -331,15 +345,15 @@ egov-indexer:
   memory_limits: "768Mi"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"        ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"        ##### Change repo url with Your fork Repo url
       branch: "PROD"                                      ##### Change repo branch with Your fork Repo branch
-  egov-indexer-yaml-repo-path: "file:///work-dir/health-campaign-config/egov-indexer/error-queue.yml,file:///work-dir/health-campaign-config/egov-indexer/product-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/project-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/individual-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/household-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/project-task-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/stock-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/facility-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/project-staff-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/egov-error-queue-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/pgr-services.yml,file:///work-dir/health-campaign-config/egov-indexer/service-request-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/referral-management-indexer.yml"
+  egov-indexer-yaml-repo-path: "file:///work-dir/health-campaign-config/egov-indexer/error-queue.yml,file:///work-dir/health-campaign-config/egov-indexer/product-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/project-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/individual-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/household-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/project-task-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/stock-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/facility-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/project-staff-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/egov-error-queue-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/pgr-services.yml,file:///work-dir/health-campaign-config/egov-indexer/service-request-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/referral-management-indexer.yml,file:///work-dir/health-campaign-config/egov-indexer/transformer-pgr-services.yml,file:///work-dir/health-campaign-config/egov-indexer/attendance-service-indexer.yml"
 
 egov-persister:
   replicas: 1
   images:
     - egovio/egov-persister
-  persist-yml-path: "file:///work-dir/health-campaign-config/egov-persister/audit-service-persister.yml,file:///work-dir/health-campaign-config/egov-persister/egov-user-event-persister.yml,file:///work-dir/health-campaign-config/egov-persister/egov-workflow-v2-persister.yml,file:///work-dir/health-campaign-config/egov-persister/hrms-employee-persister.yml,file:///work-dir/health-campaign-config/egov-persister/pdf-generator.yml,file:///work-dir/health-campaign-config/egov-persister/product-persister.yml,file:///work-dir/health-campaign-config/egov-persister/project-persister.yml,file:///work-dir/health-campaign-config/egov-persister/individual-persister.yml,file:///work-dir/health-campaign-config/egov-persister/household-persister.yml,file:///work-dir/health-campaign-config/egov-persister/project-task-persister.yml,file:///work-dir/health-campaign-config/egov-persister/stock-persister.yml,file:///work-dir/health-campaign-config/egov-persister/facility-persister.yml,file:///work-dir/health-campaign-config/egov-persister/service-request-persister.yml,file:///work-dir/health-campaign-config/egov-persister/pgr-services-persister.yml,file:///work-dir/health-campaign-config/egov-persister/hcm-moz-impl-persister.yml,file:///work-dir/health-campaign-config/egov-persister/mdms-persister.yml,file:///work-dir/health-campaign-config/egov-persister/referral-management-persister.yml"
+  persist-yml-path: "file:///work-dir/health-campaign-config/egov-persister/audit-service-persister.yml,file:///work-dir/health-campaign-config/egov-persister/egov-user-event-persister.yml,file:///work-dir/health-campaign-config/egov-persister/egov-workflow-v2-persister.yml,file:///work-dir/health-campaign-config/egov-persister/hrms-employee-persister.yml,file:///work-dir/health-campaign-config/egov-persister/pdf-generator.yml,file:///work-dir/health-campaign-config/egov-persister/product-persister.yml,file:///work-dir/health-campaign-config/egov-persister/project-persister.yml,file:///work-dir/health-campaign-config/egov-persister/individual-persister.yml,file:///work-dir/health-campaign-config/egov-persister/household-persister.yml,file:///work-dir/health-campaign-config/egov-persister/project-task-persister.yml,file:///work-dir/health-campaign-config/egov-persister/stock-persister.yml,file:///work-dir/health-campaign-config/egov-persister/facility-persister.yml,file:///work-dir/health-campaign-config/egov-persister/service-request-persister.yml,file:///work-dir/health-campaign-config/egov-persister/pgr-services-persister.yml,file:///work-dir/health-campaign-config/egov-persister/hcm-moz-impl-persister.yml,file:///work-dir/health-campaign-config/egov-persister/mdms-persister.yml,file:///work-dir/health-campaign-config/egov-persister/referral-management-persister.yml,file:///work-dir/health-campaign-config/egov-persister/attendance-service-persister.yml"
   initContainers:
     gitSync:
       repo: "git@github.com:HCM-NIGERIA/health-campaign-config"      ##### Change repo url with Your fork Repo url
@@ -348,28 +362,28 @@ egov-persister:
 egov-data-uploader:
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"      ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"      ##### Change repo url with Your fork Repo url
       branch: "PROD"                                    ##### Change repo branch with Your fork Repo branch
 
 egov-searcher:
   search-yaml-path: ""
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"     ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"     ##### Change repo url with Your fork Repo url
       branch: "PROD"                                   ##### Change repo branch with Your fork Repo branch
 
 dashboard-analytics:
   config-schema-paths: "file:///work-dir/health-campaign-config/egov-dss-dashboards/dashboard-analytics/*.json"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"      ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"      ##### Change repo url with Your fork Repo url
       branch: "PROD"                                    ##### Change repo branch with Your fork Repo branch
 
 dashboard-ingest:
   config-schema-paths: "file:///work-dir/health-campaign-config/egov-dss-dashboards/dashboard-ingest/*.json"
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"      ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"      ##### Change repo url with Your fork Repo url
       branch: "PROD"                                    ##### Change repo branch with Your fork Repo branch
 
 # reportinfra >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -379,14 +393,14 @@ report:
   spring-datasource-tomcat-max-active: 5
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"     ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"     ##### Change repo url with Your fork Repo url
       branch: "PROD"                                   ##### Change repo branch with Your fork Repo branch
   report-locationsfile-path: "file:///work-dir/health-campaign-config/reports/reportFileLocationsv1.txt"
 
 pdf-service:
   initContainers:
     gitSync:
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config"     ##### Change repo url with Your fork Repo url
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config"     ##### Change repo url with Your fork Repo url
       branch: "PROD"                                   ##### Change repo branch with Your fork Repo branch
   data-config-urls: "file:///work-dir/health-campaign-config/pdf-service/data-config/tradelicense-receipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/property-receipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/property-bill.json,file:///work-dir/health-campaign-config/pdf-service/data-config/tradelicense-bill.json,file:///work-dir/health-campaign-config/pdf-service/data-config/firenoc-receipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/pt-receipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/tl-receipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/consolidatedbill.json,file:///work-dir/health-campaign-config/pdf-service/data-config/consolidatedreceipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/tlapplication.json,file:///work-dir/health-campaign-config/pdf-service/data-config/passvehicle-certificate.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ws-consolidatedacknowlegment.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ws-consolidatedsewerageconnection.json,file:///work-dir/health-campaign-config/pdf-service/data-config/buildingpermit.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ptmutationcertificate.json,file:///work-dir/health-campaign-config/pdf-service/data-config/tlrenewalcertificate.json,file:///work-dir/health-campaign-config/pdf-service/data-config/bpa-revocation.json,file:///work-dir/health-campaign-config/pdf-service/data-config/buildingpermit-low.json,file:///work-dir/health-campaign-config/pdf-service/data-config/misc-receipt.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ws-applicationwater.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ws-sanctionletter.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ws-estimationnotice.json,file:///work-dir/health-campaign-config/pdf-service/data-config/ws-applicationsewerage.json,file:///work-dir/health-campaign-config/pdf-service/data-config/tlcertificate.json"
   format-config-urls: "file:///work-dir/health-campaign-config/pdf-service/format-config/tradelicense-receipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/property-receipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/property-bill.json,file:///work-dir/health-campaign-config/pdf-service/format-config/tradelicense-bill.json,file:///work-dir/health-campaign-config/pdf-service/format-config/firenoc-receipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/pt-receipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/tl-receipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/consolidatedbill.json,file:///work-dir/health-campaign-config/pdf-service/format-config/consolidatedreceipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/tlapplication.json,file:///work-dir/health-campaign-config/pdf-service/format-config/passvehicle-certificate.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ws-consolidatedacknowlegment.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ws-consolidatedsewerageconnection.json,file:///work-dir/health-campaign-config/pdf-service/format-config/buildingpermit.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ptmutationcertificate.json,file:///work-dir/health-campaign-config/pdf-service/format-config/tlrenewalcertificate.json,file:///work-dir/health-campaign-config/pdf-service/format-config/bpa-revocation.json,file:///work-dir/health-campaign-config/pdf-service/format-config/buildingpermit-low.json,file:///work-dir/health-campaign-config/pdf-service/format-config/misc-receipt.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ws-applicationwater.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ws-sanctionletter.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ws-estimationnotice.json,file:///work-dir/health-campaign-config/pdf-service/format-config/ws-applicationsewerage.json,file:///work-dir/health-campaign-config/pdf-service/format-config/tlcertificate.json"
@@ -396,7 +410,7 @@ pdf-service:
 # financials >>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 egf-master:
-  db-url: "jdbc:postgresql://ng-health-prd-db.cp2402gi2u8g.af-south-1.rds.amazonaws.com:5432/nghealthprd"
+  db-url: "jdbc:postgresql://sn-health-prd-db.cp6quao6ao9k.af-south-1.rds.amazonaws.com:5432/snhealthprd"
   memory_limits: 512Mi
   heap: "-Xmx256m -Xms256m"
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -506,13 +520,13 @@ egov-workflow-v2:
   java-args: -Dspring.profiles.active=monitoring
   heap: "-Xmx192m -Xms192m"
   workflow-statelevel: "false"
-  host-link: "https://egov-demo.egovernments.org/citizen/"
+  host-link: "https://senegal-hcm.digit.org/citizen/"
   pdf-link: "/download/epass?tenantId={TENANTID}&ids={UUID}"
 
 egov-hrms:
   java-args: -Dspring.profiles.active=monitoring
   heap: "-Xmx512m -Xms512m"
-  employee-applink: "https://egov-demo.egovernments.org/employee/user/login"
+  employee-applink: "https://senegal-hcm.digit.org/digit-ui/employee/user/login"
 
 
 egov-weekly-impact-notifier:
@@ -622,11 +636,11 @@ kafka-v2:
   persistence:
     enabled: true
     aws:
-      - volumeId: "vol-04baac5edf0a4d685" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-00605d69a09bc0d74" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-0e00d07d5c122f06a" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-06ce1fa24190b2e5e" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-0b93d59087123c6fe" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-060546b905ac29285" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
   zookeeperHosts: "zookeeper-v2.zookeeper-cluster:2181/kafka-v2"
 
@@ -652,11 +666,11 @@ zookeeper-v2:
   persistence:
     enabled: true
     aws:
-      - volumeId: "vol-0bbdf4b73210aa310" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-0bb2b0a68207e7bd7" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-0068a7f5899a6c71c" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-0f2b5581016674d2d" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-0473e30c093c94782" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-0e14cf887eccbfb9d" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
 
   ## Zookeeper JVM Heap Option
@@ -676,19 +690,19 @@ elasticsearch-data:
   persistence:
     enabled: true
     aws:
-      - volumeId: "vol-0804f4cfa4e755d60" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-0fc8e72d83e1a60d7" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-0d8335085000c51d7" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-00d112b5d10a727e2" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-0efb6f17c1e3009a1" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-06ebbff984b377608" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
 
-  esJavaOpts: "-Xmx1g -Xms1g"
+  esJavaOpts: "-Xmx3500M -Xms3500M"
   resources:
     requests:
-      memory: "2Gi"
+      memory: "4Gi"
     limits:
-      memory: "2Gi"
+      memory: "4Gi"
 
 elasticsearch-master:
   namespace: es-cluster-v8
@@ -698,11 +712,11 @@ elasticsearch-master:
   persistence:
     enabled: true
     aws:
-      - volumeId: "vol-0931b516770061fea" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-062767c0075490dcc" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-02304fda905c1a757" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-0c07894b07b42e99f" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
-      - volumeId: "vol-098e14f3928dc8aa8" ## add your respective volume id eg. vol-0085073c65f76dre5
+      - volumeId: "vol-025889b987f9ccaee" ## add your respective volume id eg. vol-0085073c65f76dre5
         zone: af-south-1b            ## add your respective zone eg. ap-south-1b
 
   esJavaOpts: "-Xmx448m -Xms448m"
@@ -726,15 +740,15 @@ oauth2-proxy:
   config:
     configFile: |-
       email_domains = [ "*" ]
-      github_org = "HCM-NIGERIA"
-      github_team = "hcm-nigeria-impl"
+      github_org = "HCM-SENEGAL"
+      github_team = "hcm-senegal-impl"
       upstreams = [ "file:///dev/null" ]
 
 grafana:
   initContainers:
     gitSync:
       enabled: true
-      repo: "git@github.com:HCM-NIGERIA/health-campaign-config" #REPLACE with your configs repo
+      repo: "git@github.com:HCM-SENEGAL/health-campaign-config" #REPLACE with your configs repo
       branch: "PROD" #REPLACE with config repo branch name
   dashboardsFolder: /work-dir/health-campaign-config/monitoring-dashboards    
 project:
@@ -748,21 +762,21 @@ project:
       memory: "2Gi"
 transformer:
   replicas: 1
-  heap: "-Xmx756m -Xms756m"
-  memory_limits: "1Gi"
+  heap: "-Xmx1536m -Xms1536m"
+  memory_limits: "2Gi"
   resources:
     requests:
-      memory: "1Gi"
+      memory: "2Gi"
     limits:
-      memory: "1Gi"
+      memory: "2Gi"
 hcm-moz-impl:
   replicas: 1
-  heap: "-Xmx1024m -Xms1024m"
-  memory_limits: "2Gi"
-  startDate: "15/05/2024"
-  endDate: "05/06/2024"
+  heap: "-Xmx2048m -Xms2048m"
+  memory_limits: "3Gi"
+  startDate: "26/07/2024"
+  endDate: "30/07/2024"
   resources:
     requests:
-      memory: "2Gi"
+      memory: "3Gi"
     limits:
-      memory: "2Gi"
+      memory: "3Gi"
