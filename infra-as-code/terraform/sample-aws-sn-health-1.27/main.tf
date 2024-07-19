@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "digit-snhealthprd-terraform"
+    bucket = "digit-snhealthprdod-terraform"
     key    = "digit-bootcamp-setup/terraform.tfstate"
     region = "af-south-1"
     # The below line is optional depending on whether you are using DynamoDB for state locking and consistency
@@ -26,7 +26,7 @@ module "db" {
   instance_class                = "db.m5.large"  ## postgres db instance type
   engine_version                = "12.17"   ## postgres version
   storage_type                  = "gp2"
-  storage_gb                    = "35"     ## postgres disk size
+  storage_gb                    = "30"     ## postgres disk size
   backup_retention_days         = "7"
   administrator_login           = "${var.db_username}"
   administrator_login_password  = "${var.db_password}"
@@ -88,7 +88,7 @@ module "eks" {
 
 ##By default worker groups is Configured with SPOT, As per your requirement you can below values.
 
-  worker_groups_launch_template = [
+  worker_groups = [
     {
       name                          = "spot"
       ami_id                        = "ami-01f0943e426a7248a"
@@ -100,8 +100,6 @@ module "eks" {
       asg_desired_capacity          = "${var.number_of_worker_nodes}"
       spot_allocation_strategy      = "capacity-optimized"
       spot_instance_pools           = null
-      launch_template_name          = "${var.cluster_name}-lt"
-      launch_template_version       = "$Latest"
     }
   ]
   tags = "${
