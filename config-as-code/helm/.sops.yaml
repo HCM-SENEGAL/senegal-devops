@@ -1,4 +1,4 @@
 # creation rules are evaluated sequentially, the first match wins
 creation_rules:
   - path: environments/sn-health-prd-secrets.yaml
-    kms: 'arn:aws:kms:af-south-1:730335612243:key/2220401a-583d-478f-8a8e-be5e7dd942f5'
+    kms: 'arn:aws:kms:af-south-1:564518252813:key/f280cf96-876e-40c8-9b2f-9a3b263f3a0d'
