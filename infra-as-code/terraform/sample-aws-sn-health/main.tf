@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "digit-snhealthprd-terraform"
+    bucket = "digit-senhealthprd-terraform"
     key    = "digit-bootcamp-setup/terraform.tfstate"
     region = "af-south-1"
     # The below line is optional depending on whether you are using DynamoDB for state locking and consistency
@@ -26,7 +26,7 @@ module "db" {
   instance_class                = "db.m5.large"  ## postgres db instance type
   engine_version                = "12.17"   ## postgres version
   storage_type                  = "gp2"
-  storage_gb                    = "35"     ## postgres disk size
+  storage_gb                    = "30"     ## postgres disk size
   backup_retention_days         = "7"
   administrator_login           = "${var.db_username}"
   administrator_login_password  = "${var.db_password}"
@@ -221,4 +221,50 @@ module "kafka" {
   
 }
 
+module "es-master-infra" {
+
+  source = "../modules/storage/aws"
+  storage_count = 3
+  environment = "${var.cluster_name}"
+  disk_prefix = "es-master-infra"
+  availability_zones = "${var.availability_zones}"
+  storage_sku = "gp2"
+  disk_size_gb = "10"
+  
+}
+module "es-data-infra" {
+
+  source = "../modules/storage/aws"
+  storage_count = 3
+  environment = "${var.cluster_name}"
+  disk_prefix = "es-data-infra"
+  availability_zones = "${var.availability_zones}"
+  storage_sku = "gp2"
+  disk_size_gb = "100"
+  
+}
+
+module "zookeeper-infra" {
+
+  source = "../modules/storage/aws"
+  storage_count = 3
+  environment = "${var.cluster_name}"
+  disk_prefix = "zookeeper-infra"
+  availability_zones = "${var.availability_zones}"
+  storage_sku = "gp2"
+  disk_size_gb = "10"
+  
+}
+
+module "kafka-infra" {
+
+  source = "../modules/storage/aws"
+  storage_count = 3
+  environment = "${var.cluster_name}"
+  disk_prefix = "kafka-infra"
+  availability_zones = "${var.availability_zones}"
+  storage_sku = "gp2"
+  disk_size_gb = "100"
+  
+}
 
