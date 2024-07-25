@@ -50,7 +50,7 @@ modules:
       - "business"
     services:
       - egovio/employee:v1.8.0-2ac8314b2f-116
-      - egovio/digit-ui:master-impl-8fa035ad79-160
+      - egovio/digit-ui:HDDF-899-23ca45d07f-169
   - name: m_health
     dependencies:
       - "backbone"
