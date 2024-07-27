@@ -28,10 +28,11 @@ cluster-configs:
         redis-downsync-host: "sn-health-prd-001.sn-health-prd.kferal.afs1.cache.amazonaws.com"
         s3-assets-bucket: "(pg-health-egov-assets|egov-health-playground-assets)"
         es-host: "elasticsearch-data.es-cluster-v8"
+        es-infra-host: "elasticsearch-data-infra-v1.es-cluster"
         es-indexer-host: "https://elasticsearch-data.es-cluster-v8:9200/"
         flyway-locations: "filesystem:/flyway/sql,filesystem:/flyway/seed,filesystem:/flyway/qa"
         kafka-brokers: "kafka-v2.kafka-cluster:9092"
-        kafka-infra-brokers: "kafka-v2.kafka-cluster:9092"
+        kafka-infra-brokers: "kafka-v2-infra.kafka-cluster:9092"
         logging-level-jdbc: "DEBUG"
         mobile-validation-workaround: "true"
         serializers-timezone-in-ist: "true"
@@ -549,7 +550,7 @@ kafka-config:
   kafka-brokers: "kafka-v2.kafka-cluster:9092"
 
 logging-config:
-  es-host: "elasticsearch-client-v1.es-cluster"
+  es-host: "elasticsearch-data-infra-v1.es-cluster"
   es-port: "9200"
 
 jaeger:
@@ -637,6 +638,35 @@ fluent-bit:
   egov-infra-log-topic: "egov-infra-logs"
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+kafka-v2-infra:
+  persistence:
+    enabled: true
+    aws:
+      - volumeId: "vol-032f26004fd28f8af" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-0e3c0bf40f2f989db" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-0dc46c8b184912f2f" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+  zookeeperHosts: "zookeeper-v2-infra.zookeeper-cluster:2181/kafka-v2-infra"
+
+  heapOptions: "-Xms704M -Xmx704M"
+  memory_limits: 1408Mi
+  lingerMs: "250"
+  numberPartitions: "3"
+  replicationFactor: "2"
+  minInsyncReplicas: "1"
+  offsetsReplicationFactor: "3"
+  maxRequestSize: "20000000"
+  maxMessageBytes: "20000000"
+  maxReplicaFetchMaxBytes: "20000000"
+  maxPartitionFetchBytes: "20000000"
+  requestTimeoutMs: "600000"
+  heartbeatIntervalMs: "1000"
+  maxPollIntervalMs: "900000"
+  maxPollRecords: "100"
+  sessionTimeoutMs: "300000"
+
 # kafka-v2 AWS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 kafka-v2:
   persistence:
@@ -667,6 +697,27 @@ kafka-v2:
   maxPollRecords: "100"
   sessionTimeoutMs: "300000"
 
+zookeeper-v2-infra:
+  persistence:
+    enabled: true
+    aws:
+      - volumeId: "vol-0ed2ce07121ad2b47" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-060ae2e8900be8ce1" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-0489423dd90fd3724" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+
+  ## Zookeeper JVM Heap Option
+  heapOptions: "-Xms256M -Xmx256M"
+  resources:
+    limits:
+      cpu: 300m
+      memory: 384Mi
+    requests:
+      cpu: 300m
+      memory: 384Mi
+
 # zookeeper-v2 AWS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 zookeeper-v2:
   persistence:
@@ -689,6 +740,26 @@ zookeeper-v2:
       cpu: 300m
       memory: 384Mi
 
+elasticsearch-data-infra-v1:
+  image:
+    tag: 6.6.2
+  persistence:
+    enabled: true
+    aws:
+      - volumeId: "vol-013a7a4a84bba9b7f" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-0a0d5e82efee5ff09" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-0847366eeaecc366c" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+
+  esJavaOpts: "-Xmx1g -Xms1g"
+  resources:
+    requests:
+      memory: "2Gi"
+    limits:
+      memory: "2Gi"
+
 elasticsearch-data:
   namespace: es-cluster-v8
   image:
@@ -709,6 +780,27 @@ elasticsearch-data:
       memory: "4Gi"
     limits:
       memory: "4Gi"
+
+elasticsearch-master-infra-v1:
+  replicas: 3
+  image:
+    tag: 6.6.2
+  persistence:
+    enabled: true
+    aws:
+      - volumeId: "vol-029da485b1068932a" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-0520d53eacc9246ad" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+      - volumeId: "vol-06ad3590b5c16984e" ## add your respective volume id eg. vol-0085073c65f76dre5
+        zone: af-south-1b            ## add your respective zone eg. af-south-1b
+
+  esJavaOpts: "-Xmx448m -Xms448m"
+  resources:
+    requests:
+      memory: "896Mi"
+    limits:
+      memory: "896Mi"
 
 elasticsearch-master:
   namespace: es-cluster-v8
@@ -736,7 +828,7 @@ es-curator:
   schedule: "45 18 * * *"
   images:
     - bobrik/curator:5.6.0
-  es-host: "elasticsearch-client-v1.es-cluster"
+  es-host: "elasticsearch-data-infra-v1.es-cluster"
   logs-cleanup-enabled: "true"
   jaeger-cleanup-enabled: "true"
   logs-to-retain: "7"

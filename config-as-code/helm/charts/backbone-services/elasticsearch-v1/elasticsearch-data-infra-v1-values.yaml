@@ -1,12 +1,12 @@
 
 name: elasticsearch-data-infra-v1
-namespace: es-cluster-infra
+namespace: es-cluster
 replicas: 3
 
 image:
   pullPolicy: IfNotPresent  
   repository: docker.elastic.co/elasticsearch/elasticsearch
-  tag: 6.4.2
+  tag: 6.6.2
 
 clusterName: "elasticsearch-infra-v1"
 nodeGroup: "data"

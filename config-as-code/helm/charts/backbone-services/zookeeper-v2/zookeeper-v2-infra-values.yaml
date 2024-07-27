@@ -1,15 +1,28 @@
+## Default values for cp-zookeeper.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
 
-name: kafka-v2-infra
-namespace: kafka-cluster
+## ------------------------------------------------------
+## Zookeeper
+## ------------------------------------------------------
+name: zookeeper-v2-infra
+namespace: zookeeper-cluster
+## Number of zookeeper servers, should be odd number
 replicas: 3
-zookeeperHosts: "zookeeper-v2-infra.zookeeper-cluster:2181/kafka-v2-infra"
+
+## Minimum number of servers available to ensure the availability of zookeeper service
+## minAvailable: 2
+
+## Images Info
+## ref: https://hub.docker.com/r/confluentinc/cp-zookeeper/
 
 image:
   pullPolicy: IfNotPresent  
-  repository: confluentinc/cp-kafka
+  repository: confluentinc/cp-zookeeper
   tag: 5.2.2
 
-
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: IfNotPresent
 
 ## Specify an array of imagePullSecrets. 
@@ -26,6 +39,9 @@ podManagementPolicy: Parallel
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
 updateStrategy: OnDelete
 
+## Zookeeper Configuration
+## ref: https://zookeeper.apache.org/doc/r3.4.10/zookeeperAdmin.html#sc_configuration
+## ref: https://docs.confluent.io/current/zookeeper/deployment.html#important-configuration-options
 tickTime: 2000
 syncLimit: 5
 initLimit: 10
@@ -33,25 +49,14 @@ maxClientCnxns: 60
 autoPurgeSnapRetainCount: 3
 autoPurgePurgeInterval: 24
 
+## Zookeeper JVM Heap Option
+heapOptions: "-Xms256M -Xmx256M"
 
-heapOptions: "-Xms704M -Xmx704M"
-memory_limits: 1408Mi
-logDirs: "/opt/kafka-data/logs"
-listenerSecurity: "PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT"
-lingerMs: "250"
-numberPartitions: "3"
-replicationFactor: "2"
-minInsyncReplicas: "1"
-offsetsReplicationFactor: "3"
-maxRequestSize: "20000000"
-maxMessageBytes: "20000000"
-maxReplicaFetchMaxBytes: "20000000"
-maxPartitionFetchBytes: "20000000"
-requestTimeoutMs: "600000"
-heartbeatIntervalMs: "1000"
-maxPollIntervalMs: "900000"
-maxPollRecords: "100"
-sessionTimeoutMs: "300000"
+## Port
+## ref: https://zookeeper.apache.org/doc/r3.4.10/zookeeperAdmin.html#sc_configuration
+serverPort: 2888
+leaderElectionPort: 3888
+clientPort: 2181
 
 ## Persistent Volumes
 ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
@@ -66,34 +71,39 @@ persistence:
   #     zone: ap-south-1c 
 
   # azure:
-  #   - diskName: kafka-0
-  #     diskUri: /subscriptions/b4e1aa53-c521-44e6-8a4d-5ae107916b5b/resourceGroups/MC_egov-micro-dev_egov-micro-dev_southindia/providers/Microsoft.Compute/disks/kafka-0
-  #   - diskName: kafka-1
-  #     diskUri: /subscriptions/b4e1aa53-c521-44e6-8a4d-5ae107916b5b/resourceGroups/MC_egov-micro-dev_egov-micro-dev_southindia/providers/Microsoft.Compute/disks/kafka-1
-  #   - diskName: kafka-2
-  #     diskUri: /subscriptions/b4e1aa53-c521-44e6-8a4d-5ae107916b5b/resourceGroups/MC_egov-micro-dev_egov-micro-dev_southindia/providers/Microsoft.Compute/disks/kafka-2 
+  #   - diskName: zookeeper-0
+  #     diskUri: value
+  #   - diskName: zookeeper-1
+  #     diskUri: value
+  #   - diskName: zookeeper-2
+  #     diskUri: value
 
-  #openstack:
-  #  - f37a03aa-6212-4c62-a805-9ce139fab180
-  #  - f37a03aa-6212-4c62-a805-9ce139fab180
-  #  - f37a03aa-6212-4c62-a805-9ce139fab180
-  
-  dataDirSize: 50Gi
+  # openstack:
+  #   - f37a03aa-6212-4c62-a805-9ce139fab180
+  #   - f37a03aa-6212-4c62-a805-9ce139fab180
+  #   - f37a03aa-6212-4c62-a805-9ce139fab180
+
+  ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
+  ## production servers this number should likely be much larger.
+  ##
+  ## Size for Data dir, where ZooKeeper will store the in-memory database snapshots.
+  dataDirSize: 5Gi
+  # dataDirStorageClass: ""
 
 
 ## Pod Compute Resources
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
-
-# We usually recommend not to specify default resources and to leave this as a conscious
-# choice for the user. This also increases chances charts run on environments with little
-# resources, such as Minikube. If you do want to specify resources, uncomment the following
-# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-resources: |
-  requests:
-    memory: {{ .Values.memory_limits | quote }}
-    cpu: 500m
-  limits:
-    memory: {{ .Values.memory_limits | quote }} 
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits:
+      cpu: 300m
+      memory: 384Mi
+    requests:
+      cpu: 300m
+      memory: 384Mi   
 
 ## Custom pod annotations
 podAnnotations: {}
@@ -109,8 +119,8 @@ tolerations: {}
 ## Monitoring
 ## Zookeeper JMX Settings
 ## ref: https://docs.confluent.io/current/installation/docker/docs/operations/monitoring.html
-#jmx:
-#  port: 5555
+jmx:
+  port: 5555
 
 ## Prometheus Exporter Configuration
 ## ref: https://prometheus.io/docs/instrumenting/exporters/
