@@ -13,9 +13,11 @@ cluster-configs:
     egov-config:
       namespace: [egov, monitoring]
       data:
-        db-host: "sn-health-prd-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com" ## Add db-host name eg: egov-demo.database.azure.com
+        db-host: "sn-health-prd-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com"
+        db-replica-host: "sn-health-prd-replica-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com" ## Add db-host name eg: egov-demo.database.azure.com
         db-name: "snhealthprd" ## Add db-name
         db-url: "jdbc:postgresql://sn-health-prd-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com:5432/snhealthprd" ## example: jdbc:postgresql://egov-demo.postgres.database.azure.com:5432/egov_demo
+        db-replica-url: "jdbc:postgresql://sn-health-prd-replica-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com:5432/snhealthprd" ## example: jdbc:postgresql://egov-demo.postgres.database.azure.com:5432/egov_demo
         domain: "senegal-hcm.digit.org" ## Add your Domain Name
         egov-services-fqdn-name: "https://senegal-hcm.digit.org/" ## Add your Domain Name
         aws-cluster-ip: "https://206A83F0927CB7B91F67023E55297186.sk1.af-south-1.eks.amazonaws.com"
@@ -23,6 +25,7 @@ cluster-configs:
         aws-cluster-name: "arn:aws:eks:af-south-1:767397920703:cluster/sn-health-prd"
         egov-state-level-tenant-id: "sn"
         redis-host: "redis.backbone"
+        redis-downsync-host: "sn-health-prd-001.sn-health-prd.kferal.afs1.cache.amazonaws.com"
         s3-assets-bucket: "(pg-health-egov-assets|egov-health-playground-assets)"
         es-host: "elasticsearch-data.es-cluster-v8"
         es-indexer-host: "https://elasticsearch-data.es-cluster-v8:9200/"
@@ -148,9 +151,12 @@ cluster-configs:
         health-registration-service: "http://health-registration-service:8080/"
         health-delivery-service: "http://health-delivery-service:8080/"
         project: "http://project:8080/"
+        project-referral: "http://project-referral.egov:8080/"
         product: "http://product:8080/"
         household: "http://household:8080/"
+        household-referral: "http://household-referral:8080/"
         individual: "http://individual:8080/"
+        individual-referral: "http://individual-referral:8080/"
         stock: "http://stock:8080/"
         facility: "http://facility:8080/"
         service-request: "http://service-request:8080/"
@@ -752,6 +758,15 @@ grafana:
       branch: "PROD" #REPLACE with config repo branch name
   dashboardsFolder: /work-dir/health-campaign-config/monitoring-dashboards    
 project:
+  replicas: 1
+  heap: "-Xmx2g -Xms2g"
+  memory_limits: "2Gi"
+  resources:
+    requests:
+      memory: "2Gi"
+    limits:
+      memory: "2Gi"
+project-referral:
   replicas: 1
   heap: "-Xmx2g -Xms2g"
   memory_limits: "2Gi"
