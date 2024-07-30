@@ -887,3 +887,25 @@ hcm-moz-impl:
       memory: "3Gi"
     limits:
       memory: "3Gi"
+
+jupyterhub:
+  hub:
+    config:
+      Authenticator:
+        admin_users:
+          - reportsadmin
+      NativeAuthenticator:
+        minimum_password_length: 8
+        check_common_password: false
+        allowed_failed_logins: 5
+        seconds_before_next_try: 300
+      JupyterHub:
+        admin_access: true
+  ingress:
+    enabled: true
+    hosts:
+      - senegal-hcm.digit.org
+    tls:
+      - hosts:
+          - senegal-hcm.digit.org
+        secretName: senegal-hcm.digit.org-tls-certs
