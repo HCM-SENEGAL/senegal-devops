@@ -50,7 +50,7 @@ modules:
       - "business"
     services:
       - egovio/employee:v1.8.0-2ac8314b2f-116
-      - egovio/digit-ui:HDDF-899-23ca45d07f-169
+      - egovio/digit-ui:master-impel-senegal-f94019bc35-174
   - name: m_health
     dependencies:
       - "backbone"
