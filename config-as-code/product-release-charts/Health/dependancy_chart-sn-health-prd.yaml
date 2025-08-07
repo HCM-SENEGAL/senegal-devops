@@ -2,10 +2,11 @@ version: v1.0
 modules:
   - name: m_backbone
     services:
-      - zookeeper-v2
-      - kafka-v2
+      # - zookeeper-v2
+      # - kafka-v2
 #      - kafka-connect
 #      - kafka-connect-restart-tasks
+      - kafka-kraft
       - elasticsearch-master
       - elasticsearch-data
       - kibana
