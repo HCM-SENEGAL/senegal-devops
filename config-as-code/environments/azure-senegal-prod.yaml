@@ -774,12 +774,12 @@ elasticsearch-data:
       - diskName: "es-data-v1-2"  ## add diskName
         diskUri: "/subscriptions/e2ac6578-a64e-4ce1-ac20-269864032cdf/resourceGroups/MC_azure-senegal-prod_azure-senegal-prod_southafricanorth/providers/Microsoft.Compute/disks/es-data-2"## Azure diskURI
 
-  esJavaOpts: "-Xmx3500M -Xms3500M"
+  esJavaOpts: "-Xmx5000M -Xms5000M"
   resources:
     requests:
-      memory: "4Gi"
+      memory: "6Gi"
     limits:
-      memory: "4Gi"
+      memory: "6Gi"
 
 # elasticsearch-master-infra-v1:
 #   replicas: 3
