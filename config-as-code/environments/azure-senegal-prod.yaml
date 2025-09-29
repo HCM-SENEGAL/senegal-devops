@@ -17,6 +17,7 @@ cluster-configs:
         # db-replica-host: "sn-health-prd-replica-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com" ## Add db-host name eg: egov-demo.database.azure.com
         db-name: "azure-senegal-prod-db" ## Add db-name
         db-url: "jdbc:postgresql://azure-senegal-prod-server.postgres.database.azure.com:5432/azure-senegal-prod-db" ## example: jdbc:postgresql://egov-demo.postgres.database.azure.com:5432/egov_demo
+        db-read-url: "jdbc:postgresql://azure-senegal-prod-read-server.postgres.database.azure.com:5432/azure-senegal-prod-db"
         # db-replica-url: "jdbc:postgresql://sn-health-prd-replica-db.cz0mmwqu2dmb.af-south-1.rds.amazonaws.com:5432/snhealthprd" ## example: jdbc:postgresql://egov-demo.postgres.database.azure.com:5432/egov_demo
         domain: "senegal-hcm.digit.org" ## Add your Domain Name
         egov-services-fqdn-name: "https://senegal-hcm.digit.org/" ## Add your Domain Name
@@ -25,7 +26,7 @@ cluster-configs:
         aws-cluster-name: "arn:aws:eks:af-south-1:767397920703:cluster/sn-health-prd"
         egov-state-level-tenant-id: "sn"
         redis-host: "redis.backbone"
-        redis-downsync-host: "redis.backbone"
+        redis-downsync-host: "redis-downsync.backbone"
         s3-assets-bucket: "(pg-health-egov-assets|egov-health-playground-assets)"
         es-host: "elasticsearch-data.es-cluster-v8"
         es-infra-host: "elasticsearch-data-infra-v1.es-cluster"
@@ -867,6 +868,11 @@ project-referral:
   #     memory: "2Gi"
   #   limits:
   #     memory: "2Gi"
+referralmanagement:
+  downsync-services-enabled: true
+  heap: "-Xmx1024m -Xms1024m"
+  memory_limits: "1024Mi"
+
 transformer:
   replicas: 1
   heap: "-Xmx1536m -Xms1536m"
