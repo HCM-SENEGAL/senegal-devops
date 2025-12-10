@@ -413,7 +413,7 @@ singleuser:
     limit:
     guarantee:
   memory:
-    limit:
+    limit: 10G
     guarantee: 3G
   extraResource:
     limits: {}
