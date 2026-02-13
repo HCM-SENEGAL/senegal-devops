@@ -1,0 +1,31 @@
+# Default values for egov-finance.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+namespace: backbone 
+
+# Common Labels
+labels:
+  app: "redis-downsync"
+
+# Container Configs
+image:
+  repository: "redis"
+  pullPolicy: IfNotPresent
+  tag: "3.2"
+replicas: "1"
+httpPort: 6379
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: role
+          operator: In
+          values:
+          - redis
+tolerations:
+- key: "dedicated"
+  operator: "Equal"
+  value: "redis"
+  effect: "NoSchedule"

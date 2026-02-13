@@ -1,10 +1,14 @@
 variable "name" {}
-variable "nodes" {}
+variable "node_count" {}
 variable "vm_size" {}
+variable "vm_size_custom_np" {}
 variable "client_id" {}    
 variable "client_secret" {}
 variable "resource_group" {}
 variable "location" {}
 variable "environment" {}
-
 variable "ssh_public_key" {}
+variable "network_security_group_id"{}
+variable "subnet_id"{}
+variable "subnet_id_new"{}
+variable "kubernetes_version" {}

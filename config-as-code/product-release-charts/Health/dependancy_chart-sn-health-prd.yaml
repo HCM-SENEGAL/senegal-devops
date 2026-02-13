@@ -2,10 +2,11 @@ version: v1.0
 modules:
   - name: m_backbone
     services:
-      - zookeeper-v2
-      - kafka-v2
+      # - zookeeper-v2
+      # - kafka-v2
 #      - kafka-connect
 #      - kafka-connect-restart-tasks
+      - kafka-kraft
       - elasticsearch-master
       - elasticsearch-data
       - kibana
@@ -67,5 +68,5 @@ modules:
       - egovio/project:master-impel-3f2ec6d74f-203
       - egovio/hcm-moz-impl:develop-senegal-e976a86c-384
       - egovio/egov-mdms-create:develop-3a53c3b-3
-      - egovio/referralmanagement:redis-cache-inc-downsync-nohouseholdbeneficiary-433e191842-142
+      - egovio/referralmanagement:redis-cache-inc-downsync-nohouseholdbeneficiary-ffe52c17f3-149
       - egovio/attendance:master-impel-ea8682f3-55
